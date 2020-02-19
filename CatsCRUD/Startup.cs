@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using CatsCRUD.Services;
 
 namespace CatsCRUD
 {
@@ -28,6 +29,7 @@ namespace CatsCRUD
             var con = AppConfiguration["ConnectionString:MSSQL:local"];
 
             services.AddDbContext<CatsContext>(options => options.UseSqlServer(con));
+            services.AddScoped<CatService>();
             services.AddControllers();
         }
 
