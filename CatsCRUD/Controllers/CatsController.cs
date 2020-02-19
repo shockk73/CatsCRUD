@@ -50,6 +50,10 @@ namespace CatsCRUD.Controllers
         [HttpPut("{id}")]
         public ActionResult<Cat> Put(int id, Cat cat)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
 
             if (cat == null)
             {
