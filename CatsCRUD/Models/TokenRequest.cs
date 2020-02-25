@@ -6,16 +6,12 @@ using System.Threading.Tasks;
 
 namespace CatsCRUD.Models
 {
-    public class CatRequest
+    public class TokenRequest
     {
-        public int Id { get; set; }
+        [Required]
+        public string Password { get; set; }
 
         [Required]
-        public string Name { get; set; }
-
-        [Required]
-        public int Age { get; set; }
-
-        public bool IsAlive { get; set; }
+        public string Username { get; set; }
     }
 }

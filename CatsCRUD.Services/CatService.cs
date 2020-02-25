@@ -2,52 +2,62 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CatsCRUD.Services.DAL;
 using CatsCRUD.Services.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatsCRUD.Services
 {
-    public class CatService
+    public interface ICatService
+    {
+        Task AddAsync(Cat cat);
+
+        Task DeleteAsync(int id);
+
+        Task<Cat> GetAsync(int id);
+
+        Task<IEnumerable<Cat>> GetAllAsync();
+
+        Task UpdateAsync(Cat cat);
+    }
+
+
+    public class CatService : ICatService
     {
 
-        readonly CatsContext _db;
+        readonly IUnitOfWork _unitOfWork;
 
-        public CatService(CatsContext context)
+        public CatService(IUnitOfWork unitOfWork)
         {
-            _db = context;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task AddAsync(Cat cat)
         {
-            await _db.Cats.AddAsync(cat);
-            await _db.SaveChangesAsync();
+            await _unitOfWork.CatRepository.InsertAsync(cat);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var cat = await _db.Cats.FirstOrDefaultAsync(x => x.Id == id);
-
-            _db.Cats.Remove(cat);
-
-            await _db.SaveChangesAsync();
+            await _unitOfWork.CatRepository.DeleteAsync(id);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task<Cat> GetAsync(int id)
         {
-            var cat = await _db.Cats.FirstOrDefaultAsync(c => c.Id == id);
-
-            return cat;
+            return await _unitOfWork.CatRepository.GetByIdAsync(id);
         }
 
         public async Task<IEnumerable<Cat>> GetAllAsync()
         {
-            return await _db.Cats.ToListAsync();
+            return await _unitOfWork.CatRepository.GetAsync(null, null, "");
         }
 
         public async Task UpdateAsync(Cat cat)
         {
-            _db.Update(cat);
-            await _db.SaveChangesAsync();
+            await _unitOfWork.CatRepository.UpdateAsync(cat);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

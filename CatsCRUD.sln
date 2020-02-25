@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatsCRUD", "CatsCRUD\CatsCRUD.csproj", "{728108EA-9ED3-4FFE-81AC-A8EE5E4FF316}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatsCRUD.Services", "CatsCRUD.Services\CatsCRUD.Services.csproj", "{CBDE9394-AD96-459C-AC36-84B7CFA24339}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatsCRUD.Services", "CatsCRUD.Services\CatsCRUD.Services.csproj", "{CBDE9394-AD96-459C-AC36-84B7CFA24339}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatsCRUD.Test", "CatsCRUD.Test\CatsCRUD.Test.csproj", "{B2FA1FF1-CD44-45D3-9080-59995F8F77CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{CBDE9394-AD96-459C-AC36-84B7CFA24339}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBDE9394-AD96-459C-AC36-84B7CFA24339}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBDE9394-AD96-459C-AC36-84B7CFA24339}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2FA1FF1-CD44-45D3-9080-59995F8F77CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2FA1FF1-CD44-45D3-9080-59995F8F77CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2FA1FF1-CD44-45D3-9080-59995F8F77CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2FA1FF1-CD44-45D3-9080-59995F8F77CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

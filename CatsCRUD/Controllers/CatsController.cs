@@ -6,6 +6,7 @@ using AutoMapper;
 using CatsCRUD.Models;
 using CatsCRUD.Services;
 using CatsCRUD.Services.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,17 +15,18 @@ namespace CatsCRUD.Controllers
     [Route("api/[controller]")]
     public class CatsController : Controller
     {
-        readonly  CatService _catService;
+        private readonly ICatService _catService;
 
         private readonly IMapper _mapper;
 
-        public CatsController(CatService catService, IMapper mapper)
+        public CatsController(ICatService catService, IMapper mapper)
         {
             _catService = catService;
 
             _mapper = mapper;
         }
 
+    
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CatResponse>>> Get()
         {
@@ -44,9 +46,9 @@ namespace CatsCRUD.Controllers
             return Ok(_mapper.Map<Cat, CatResponse>(cat));
         }
 
-
+        [Authorize]
         [HttpPost]
-        public async Task<ActionResult<CatResponse>> Post(CatRequest catReq)
+        public async Task<ActionResult<CatResponse>> Post([FromBody]CatRequest catReq)
         {
             if (catReq == null || !ModelState.IsValid)
                 return BadRequest();
@@ -56,28 +58,23 @@ namespace CatsCRUD.Controllers
             return Ok();
         }
 
-       
+        [Authorize(Roles = "CatOwner")]
         [HttpPut]
-        public async Task<ActionResult<CatResponse>> Put(CatRequest catReq)
+        public async Task<ActionResult<CatResponse>> Put([FromBody]CatRequest catReq)
         {
             if (catReq == null || !ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            try
-            {
-                await _catService.UpdateAsync(_mapper.Map<CatRequest, Cat>(catReq));
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return NotFound();
-            }
+
+            await _catService.UpdateAsync(_mapper.Map<CatRequest, Cat>(catReq));
+
 
             return Ok();
         }
 
-       
+        [Authorize(Roles = "CatOwner")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<CatResponse>> Delete(int id)
         {

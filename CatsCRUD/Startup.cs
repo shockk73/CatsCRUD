@@ -12,7 +12,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using CatsCRUD.Services;
+using CatsCRUD.Services.DAL;
 using CatsCRUD.Services.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using React.AspNet;
 
 namespace CatsCRUD
 {
@@ -32,7 +36,13 @@ namespace CatsCRUD
             var con = AppConfiguration["ConnectionString:MSSQL:local"];
 
             services.AddDbContext<CatsContext>(options => options.UseSqlServer(con, b => b.MigrationsAssembly("CatsCRUD")));
-            services.AddScoped<CatService>();
+            services.AddScoped<ICatService, CatService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddMvc();
+
+
             services.AddSingleton(provider =>
             {
                 var config = new MapperConfiguration(cfg => {
@@ -42,6 +52,32 @@ namespace CatsCRUD
 
                 return config.CreateMapper();
             });
+
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+
+                        ValidateIssuer = false,
+
+                        ValidIssuer = AuthOptions.Issuer,
+
+
+                        ValidateAudience = false,
+
+                        ValidAudience = AuthOptions.Audience,
+
+                        ValidateLifetime = false,
+
+
+                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+
+                        ValidateIssuerSigningKey = false,
+                    };
+                });
 
             services.AddControllers();
         }
@@ -54,12 +90,23 @@ namespace CatsCRUD
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(builder => { 
+                builder.AllowAnyMethod();
+                builder.AllowAnyOrigin();
+                builder.AllowAnyHeader();
+            });
+
 
             app.UseRouting();
+            app.UseStaticFiles();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Home");
             });
         }
     }

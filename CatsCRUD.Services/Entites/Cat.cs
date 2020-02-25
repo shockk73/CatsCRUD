@@ -14,7 +14,6 @@ namespace CatsCRUD.Services.Models
 
         public bool IsAlive { get; set; }
 
-        public double Weight { get; set; }
 
     }
 }
