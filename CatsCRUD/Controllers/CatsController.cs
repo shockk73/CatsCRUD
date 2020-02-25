@@ -2,82 +2,95 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using CatsCRUD.Models;
 using CatsCRUD.Services;
 using CatsCRUD.Services.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CatsCRUD.Controllers
 {
     [Route("api/[controller]")]
     public class CatsController : Controller
     {
-        CatService catService;
-        public CatsController(CatService _catService)
+        readonly  CatService _catService;
+
+        private readonly IMapper _mapper;
+
+        public CatsController(CatService catService, IMapper mapper)
         {
-            catService = _catService;
+            _catService = catService;
+
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public IEnumerable<CatResponse> Get()
+        public async Task<ActionResult<IEnumerable<CatResponse>>> Get()
         {
-            return catService.GetAll().Select( cat => new CatResponse { Id = cat.Id, Age = cat.Age, Name = cat.Name } );
+            return Ok( _mapper.Map<IEnumerable<Cat>, IEnumerable<CatResponse>>((await _catService.GetAllAsync())));
         }
 
         
         [HttpGet("{id}")]
-        public ActionResult<CatResponse> Get(int id)
+        public async Task<ActionResult<CatResponse>> Get(int id)
         {
-            var cat = catService.Get(id);
+            var cat = await _catService.GetAsync(id);
 
             if (cat == null)
                 return NotFound();
 
 
-            return Ok(cat);
+            return Ok(_mapper.Map<Cat, CatResponse>(cat));
         }
 
 
         [HttpPost]
-        public ActionResult<CatResponse> Post(CatRequest catReq)
+        public async Task<ActionResult<CatResponse>> Post(CatRequest catReq)
         {
             if (catReq == null || !ModelState.IsValid)
                 return BadRequest();
 
-            var cat = catService.Add(new Cat { Id = 0, Age = catReq.Age, Name = catReq.Name });
+            await _catService.AddAsync(_mapper.Map<CatRequest, Cat>(catReq));
             
-            return Ok(cat);
+            return Ok();
         }
 
        
         [HttpPut]
-        public ActionResult<CatResponse> Put(CatRequest catReq)
+        public async Task<ActionResult<CatResponse>> Put(CatRequest catReq)
         {
             if (catReq == null || !ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var cat = catService.Update(new Cat { Id = catReq.Id, Age = catReq.Age, Name = catReq.Name });
-
-            if (cat == null)
+            try
+            {
+                await _catService.UpdateAsync(_mapper.Map<CatRequest, Cat>(catReq));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
                 return NotFound();
+            }
 
-            return Ok(cat);
+            return Ok();
         }
 
        
         [HttpDelete("{id}")]
-        public ActionResult<CatResponse> Delete(int id)
+        public async Task<ActionResult<CatResponse>> Delete(int id)
         {
-            var cat = catService.Delete(id);
-
-            if (cat == null)
+            try
+            {
+                await _catService.DeleteAsync(id);
+            }
+            catch (ArgumentNullException)
             {
                 return NotFound();
             }
- 
-            return Ok(cat);
+
+            return Ok();
         }
     }
 }

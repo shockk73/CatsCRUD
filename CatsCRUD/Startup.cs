@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using CatsCRUD.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using CatsCRUD.Services;
+using CatsCRUD.Services.Models;
 
 namespace CatsCRUD
 {
@@ -20,6 +22,7 @@ namespace CatsCRUD
         public Startup(IConfiguration config)
         {
             AppConfiguration = config;
+
         }
 
         public IConfiguration AppConfiguration { get; set; }
@@ -28,8 +31,18 @@ namespace CatsCRUD
         {
             var con = AppConfiguration["ConnectionString:MSSQL:local"];
 
-            services.AddDbContext<CatsContext>(options => options.UseSqlServer(con));
+            services.AddDbContext<CatsContext>(options => options.UseSqlServer(con, b => b.MigrationsAssembly("CatsCRUD")));
             services.AddScoped<CatService>();
+            services.AddSingleton(provider =>
+            {
+                var config = new MapperConfiguration(cfg => {
+                    cfg.CreateMap<CatRequest, Cat>();
+                    cfg.CreateMap<Cat, CatResponse>();
+                });
+
+                return config.CreateMapper();
+            });
+
             services.AddControllers();
         }
 

@@ -15,5 +15,8 @@ namespace CatsCRUD.Models
 
         [Required]
         public int Age { get; set; }
+
+        [Required]
+        public bool IsAlive { get; set; }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using CatsCRUD.Services.Models;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
-namespace CatsCRUD.Models
+namespace CatsCRUD.Services
 {
     public class CatsContext : DbContext
     {

@@ -1,67 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CatsCRUD.Models;
+using System.Threading.Tasks;
 using CatsCRUD.Services.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CatsCRUD.Services
 {
     public class CatService
     {
 
-        CatsContext db;
+        readonly CatsContext _db;
 
         public CatService(CatsContext context)
         {
-            db = context;
+            _db = context;
         }
 
-        public Cat Add(Cat cat)
+        public async Task AddAsync(Cat cat)
         {
-            db.Cats.Add(cat);
-            db.SaveChanges();
+            await _db.Cats.AddAsync(cat);
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var cat = await _db.Cats.FirstOrDefaultAsync(x => x.Id == id);
+
+            _db.Cats.Remove(cat);
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task<Cat> GetAsync(int id)
+        {
+            var cat = await _db.Cats.FirstOrDefaultAsync(c => c.Id == id);
 
             return cat;
         }
 
-        public Cat Delete(int id)
+        public async Task<IEnumerable<Cat>> GetAllAsync()
         {
-            var cat = db.Cats.FirstOrDefault(x => x.Id == id);
-            if (cat == null)
-            {
-                return null;
-            }
-
-            db.Cats.Remove(cat);
-            db.SaveChanges();
-            return cat;
+            return await _db.Cats.ToListAsync();
         }
 
-        public Cat Get(int id)
+        public async Task UpdateAsync(Cat cat)
         {
-            var cat = db.Cats.FirstOrDefault(c => c.Id == id);
-
-            if (cat == null)
-                return null;
-
-            return cat;
-        }
-
-        public IEnumerable<Cat> GetAll()
-        {
-            return db.Cats.ToList();
-        }
-
-        public Cat Update(Cat cat)
-        {
-            if (!db.Cats.Any(x => x.Id == cat.Id))
-            {
-                return null;
-            }
-
-            db.Update(cat);
-            db.SaveChanges();
-            return cat;
+            _db.Update(cat);
+            await _db.SaveChangesAsync();
         }
     }
 }
