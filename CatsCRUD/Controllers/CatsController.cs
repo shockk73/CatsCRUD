@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CatsCRUD.Models;
@@ -8,7 +7,6 @@ using CatsCRUD.Services;
 using CatsCRUD.Services.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CatsCRUD.Controllers
 {
@@ -30,7 +28,16 @@ namespace CatsCRUD.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CatResponse>>> Get()
         {
-            return Ok( _mapper.Map<IEnumerable<Cat>, IEnumerable<CatResponse>>((await _catService.GetAllAsync())));
+            try
+            {
+                var cats = await _catService.GetAllAsync();
+
+                return Ok(_mapper.Map<IEnumerable<Cat>, IEnumerable<CatResponse>>(cats));
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
         }
 
         

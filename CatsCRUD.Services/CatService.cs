@@ -1,27 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using CatsCRUD.Services.DAL;
 using CatsCRUD.Services.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace CatsCRUD.Services
 {
-    public interface ICatService
-    {
-        Task AddAsync(Cat cat);
-
-        Task DeleteAsync(int id);
-
-        Task<Cat> GetAsync(int id);
-
-        Task<IEnumerable<Cat>> GetAllAsync();
-
-        Task UpdateAsync(Cat cat);
-    }
-
-
     public class CatService : ICatService
     {
 

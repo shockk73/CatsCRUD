@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
-using CatsCRUD.Services.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatsCRUD.Services.DAL
@@ -12,9 +10,9 @@ namespace CatsCRUD.Services.DAL
     public class CatRepository<T> : ICatRepository<T> where T : class
     {
 
-        private CatsContext _context;
+        private readonly CatsContext _context;
 
-        private DbSet<T> _set;
+        private readonly DbSet<T> _set;
 
         public CatRepository(CatsContext context)
         {

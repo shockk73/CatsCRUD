@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using CatsCRUD.Services.Models;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CatsCRUD.Services
 {
-    public interface IIdentityService
-    {
-        Task<string> TryCreateTokenAsync(string username, string password);
-    }
 
     public class IdentityService : IIdentityService
     {

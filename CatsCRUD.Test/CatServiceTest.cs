@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using CatsCRUD.Controllers;
-using CatsCRUD.Models;
 using CatsCRUD.Services;
 using CatsCRUD.Services.DAL;
 using CatsCRUD.Services.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
